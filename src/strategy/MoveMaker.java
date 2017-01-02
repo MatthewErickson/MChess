@@ -31,6 +31,23 @@ public class MoveMaker
 		bestMoves = new ArrayList<>();
 	}
 
+	public MoveMaker(BoardManager.Difficulty diff)
+	{
+		switch (diff)
+		{
+			case EASY:
+				this.maxLevel = 1;
+				break;
+			case NORMAL:
+				this.maxLevel = 2;
+				break;
+			case HARD:
+				this.maxLevel = 3;
+				break;
+		}
+		bestMoves = new ArrayList<>();
+	}
+
 	public Move getBestMove(GameBoard board, ChessType type) throws IllegalMoveException
 	{
 		return getBestMove(board, type, null);

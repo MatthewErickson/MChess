@@ -8,6 +8,7 @@ import strategy.Move;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Matthew on 3/22/2016.
@@ -141,17 +142,23 @@ public class GameBoard
 		{
 			throw new KingInCheckException("Check");
 		}
-		benefit = (type == ChessType.WHITE ? whiteValue - blackValue : blackValue - whiteValue);
+
+		benefit = new Random().nextInt(50) - 25;
 	}
 
 	public void calculateBenefitNormal(ChessType type) throws KingInCheckException
 	{
-		calculateBenefitEasy(type);
+		ChessObject king = (type == ChessType.WHITE ? whiteKing : blackKing);
+		if (king.attackerList.size() > 0)
+		{
+			throw new KingInCheckException("Check");
+		}
+		benefit = (type == ChessType.WHITE ? whiteValue - blackValue : blackValue - whiteValue);
 	}
 
 	public void calculateBenefitHard(ChessType type) throws KingInCheckException
 	{
-		calculateBenefitEasy(type);
+		calculateBenefitNormal(type);
 
 		List<ChessObject> pieces = (type == ChessType.BLACK ? blackPieces : whitePieces);
 		List<ChessObject> otherPieces = (type == ChessType.BLACK ? whitePieces : blackPieces);

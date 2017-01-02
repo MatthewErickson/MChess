@@ -47,7 +47,6 @@ public class Chess extends Application
 	public void start(Stage primaryStage) throws Exception
 	{
 		initUI(primaryStage);
-		BoardManager.blackDiff = BoardManager.Difficulty.HARD;
 		Thread runner = new Thread(() -> {
 			int whiteWins = 0;
 			int blackWins = 0;
@@ -57,6 +56,7 @@ public class Chess extends Application
 				System.out.printf("\rWhite: %d --- Black: %d --- Tie: %d", whiteWins, blackWins, nullWins);
 				ChessType winner = runGame();
 				Platform.runLater(() -> showWinner(winner));
+				confirm.acquireUninterruptibly();
 
 				if (winner == ChessType.WHITE)
 				{
@@ -106,6 +106,7 @@ public class Chess extends Application
 		}
 		else
 		{
+			confirm.release();
 			System.exit(0);
 		}
 	}
@@ -118,7 +119,8 @@ public class Chess extends Application
 
 		ChessType currentPlayer = ChessType.WHITE;
 		int count = 0;
-		moveMaker = new MoveMaker(MoveMaker.MAX_LEVEL);
+
+		moveMaker = new MoveMaker(BoardManager.blackDiff);
 		while (true)
 		{
 			board.evaluateBoard();

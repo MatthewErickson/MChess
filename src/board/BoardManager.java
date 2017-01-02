@@ -18,7 +18,7 @@ public class BoardManager
 	}
 
 	public static Difficulty whiteDiff = Difficulty.HARD;
-	public static Difficulty blackDiff = Difficulty.HARD;
+	public static Difficulty blackDiff = Difficulty.EASY;
 
 	public static GameBoard getFirstBoard()
 	{

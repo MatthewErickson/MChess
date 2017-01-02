@@ -3,10 +3,10 @@
     <output-path>$PROJECT_DIR$/</output-path>
     <root id="archive" name="Chess.jar">
       <element id="module-output" name="Chess" />
-      <element id="dir-copy" path="$PROJECT_DIR$/img" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/Manifest.mf" output-file-name="MANIFEST.MF" />
       </element>
+      <element id="dir-copy" path="$PROJECT_DIR$/img" />
     </root>
   </artifact>
 </component>
