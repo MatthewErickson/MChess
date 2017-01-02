@@ -231,16 +231,16 @@ public class Chess extends Application
 	{
 		if (obj != null)
 		{
-			String url = "img/" + obj.toString() + ".png";
-			InputStream stream = null;
+			InputStream stream;
 			try
 			{
-				stream = new FileInputStream(url);
+				stream = new FileInputStream("img/" + obj.toString() + ".png");
 			}
-			catch (FileNotFoundException e)
+			catch (FileNotFoundException ignored)
 			{
-				System.err.println(e);
+				stream = getClass().getClassLoader().getResourceAsStream(obj.toString() + ".png");
 			}
+
 			if (stream != null)
 			{
 				return new ImageView(new Image(stream, 100, 100, true, true));
