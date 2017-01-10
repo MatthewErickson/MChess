@@ -6,10 +6,7 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -36,6 +33,8 @@ public class Chess extends Application
 {
 
 	private Stack<GameBoard> boards;
+	private ChessType currentPlayer;
+
 	private BorderPane container;
 	private ProgressBar progress;
 	private Semaphore madeMove = new Semaphore(0);
@@ -114,17 +113,17 @@ public class Chess extends Application
 	public ChessType runGame()
 	{
 		boards = new Stack<>();
-		GameBoard board = BoardManager.getFirstBoard();
-		boards.push(board);
+		boards.push(BoardManager.getFirstBoard());
 
-		ChessType currentPlayer = ChessType.WHITE;
 		int count = 0;
+		currentPlayer = ChessType.WHITE;
 
 		moveMaker = new MoveMaker(BoardManager.blackDiff);
 		while (true)
 		{
+			GameBoard board = boards.peek();
 			board.evaluateBoard();
-			setBoard(boards.peek(), currentPlayer);
+			setBoard();
 			if (BoardManager.hasCheckmate(board, currentPlayer))
 			{
 				progress.setVisible(false);
@@ -159,7 +158,6 @@ public class Chess extends Application
 				return BoardManager.switchPlayer(currentPlayer);
 			}
 			currentPlayer = BoardManager.switchPlayer(currentPlayer);
-			board = boards.peek();
 			if (count > 250)
 			{
 				return null;
@@ -167,9 +165,26 @@ public class Chess extends Application
 		}
 	}
 
+	public void setBoard()
+	{
+		setBoard(boards.peek(), currentPlayer);
+	}
+
 	public void setBoard(GameBoard board, ChessType currentPlayer)
 	{
+		BorderPane pane = new BorderPane();
+		Button undo = new Button("Undo");
+		undo.setOnAction((event -> {
+			if (boards.size() > 2) {
+				boards.pop();
+				boards.pop();
+				setBoard();
+			}
+		}));
+		pane.setTop(undo);
+
 		GridPane grid = new GridPane();
+		pane.setBottom(grid);
 		grid.setStyle("-fx-background-color: #000;");
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(4);
@@ -225,7 +240,7 @@ public class Chess extends Application
 			}
 		}
 		Platform.runLater(() -> {
-			container.setCenter(grid);
+			container.setCenter(pane);
 		});
 	}
 
@@ -254,7 +269,8 @@ public class Chess extends Application
 
 	private void resetGridColors()
 	{
-		GridPane grid = (GridPane) container.getCenter();
+		BorderPane borderPane = (BorderPane) container.getCenter();
+		GridPane grid = (GridPane) borderPane.getBottom();
 		for (int i = 0; i < GameBoard.BOARD_SIZE; i++)
 		{
 			for (int j = 0; j < GameBoard.BOARD_SIZE; j++)
